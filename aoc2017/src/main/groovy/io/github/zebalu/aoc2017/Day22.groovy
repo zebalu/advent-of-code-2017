@@ -4,6 +4,8 @@ import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import groovy.transform.MapConstructor
 
+import java.util.stream.Collectors
+
 @CompileStatic
 class Day22 extends AbstractDay{
     static void main(String[] args) {
@@ -36,10 +38,10 @@ class Day22 extends AbstractDay{
             def lines = desc.lines().toList()
             int move = lines.size().intdiv(2)
             def y = move
-            for(l in lines) {
+            for(String l in lines) {
                 for(int i=0; i<l.size(); ++i) {
                     def c = l.charAt(i)
-                    if(c == '#') {
+                    if(c == (char)'#') {
                         int x = i - move
                         infectedNodes.add(new Coord(x,y))
                     }
@@ -87,6 +89,14 @@ class Day22 extends AbstractDay{
         int hashCode() {
             return x*10_000+y
         }
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof  Coord) {
+                Coord c = (Coord) obj;
+                return x == c.x && y == c.y;
+            }
+            return false;
+        }
         void turnLeft() {
             int t = x
             x = -y
@@ -102,71 +112,79 @@ class Day22 extends AbstractDay{
             y = -y
         }
         Coord plus(Coord rhs) {
-            new Coord(x: x+rhs.x, y: y+rhs.y)
+            new Coord(x+rhs.x, y+rhs.y)
         }
     }
-    
+
     private static class EvolvedCarrier {
-        Coord direction = new Coord(0,1)
-        Coord position = new Coord(0,0)
-        int causedInfections = 0
+        Coord direction = new Coord(0,1);
+        Coord position = new Coord(0,0);
+        int causedInfections = 0;
         void stepOn(ComplexInfectionMap map) {
-            char state = map[(Coord)position]
-            char nextState = turnState(state)
-            if(state == '.') {
-                direction.turnLeft()
-            } else if(state == 'W') {
-            } else if(state == '#') {
-                direction.turnRight()
-            } else if(state == 'F') {
-                direction.turnBack()
+            char state = map.getAt((Coord)position);
+            char nextState = turnState(state);
+            if(state == (char)'.') {
+                direction.turnLeft();
+            } else if(state == (char)'W') {
+            } else if(state == (char)'#') {
+                direction.turnRight();
+            } else if(state == (char)'F') {
+                direction.turnBack();
             }
-            if(nextState == '#') {
-                ++causedInfections
+            if(nextState == (char)'#') {
+                ++causedInfections;
             }
-            map[(Coord)position]=(char)nextState
-            position+=direction
+            map.putAt((Coord)position, (char)nextState);
+            position=position.plus(direction);
         }
-        
+
         private char turnState(char state) {
-            switch(state) {
-                case '.': return 'W' as char
-                case 'W': return '#' as char
-                case '#': return 'F' as char
-                case 'F': return '.' as char
-                default: throw new IllegalStateException("unknown state: ${state}")
+            if(state.is((char)'.')) {
+                return (char)'W'
+            } else if(state.is((char)'W')) {
+                return (char)'#'
+            } else if(state.is((char)'#')) {
+                return (char)'F'
+            } else if(state.is((char)'F')) {
+                return (char)'.'
+            } else {
+                throw new IllegalStateException("unknown state: ${state}");
             }
+        }
+
+        int getCausedInfections() {
+            return causedInfections;
         }
     }
-    
+
     private static class ComplexInfectionMap {
-        private Map<Coord, Character> infectedNodes = new HashMap<>()
-        
+        private Map<Coord, Character> infectedNodes = new HashMap<>();
+
         ComplexInfectionMap(String desc) {
-            def lines = desc.lines().toList()
-            int move = lines.size().intdiv(2)
-            def y = move
-            for(l in lines) {
-                for(int i=0; i<l.size(); ++i) {
-                    def c = l.charAt(i)
-                    if(c == '#') {
-                        int x = i - move
-                        infectedNodes.put(new Coord(x,y), '#' as char)
+            var lines = desc.lines().collect(Collectors.toList());
+            int move = lines.size().intdiv(2);
+            var y = move;
+            for(String l: lines) {
+                for(int i=0; i<l.length(); ++i) {
+                    var c = l.charAt(i);
+                    if(c.is((char)'#')) {
+                        int x = i - move;
+                        infectedNodes.put(new Coord(x,y), (char)'#');
                     }
                 }
-                y-=1
+                y-=1;
             }
         }
-        
+
         char getAt(Coord coord) {
-            return (char)infectedNodes.getOrDefault((Coord)coord, '.' as char)
+            return (char)infectedNodes.getOrDefault((Coord)coord, (char)'.');
         }
-        
+
         void putAt(Coord coord, char c) {
-            if(c == '.') {
-                infectedNodes.remove(coord)
+            if(c.is((char)'.')) {
+                infectedNodes.remove(coord);
             } else {
-                infectedNodes[(Coord)coord] = (char)c
+                infectedNodes.put((Coord)coord, (char)c);
             }
         }
     }

@@ -1,5 +1,8 @@
 package io.github.zebalu.aoc2017
 
+import java.time.Duration
+import java.time.Instant
+
 abstract class AbstractDay {
     protected final String input
     
@@ -26,8 +29,30 @@ abstract class AbstractDay {
         solve2()
         println solution2
     }
+    
+    final void fancySolve() {
+        println ":::::::::: \t ${this.class.simpleName} \t ::::::::::"
+        Instant start = Instant.now()
+        solve1()
+        Instant middle = Instant.now()
+        solve2()
+        Instant end = Instant.now()
+        println solution1
+        println solution2
+        println ''
+        println "solution 1 took:\t ${Duration.between(start, middle).toMillis()} ms"
+        println "solution 2 took:\t ${Duration.between(middle, end).toMillis()} ms"
+        println "     ${this.class.simpleName} took:\t ${Duration.between(start, end).toMillis()} ms"
+        println "========== \t ${this.class.simpleName} \t =========="
+    }
 
     protected final String readInput() {
-        this.class.getResourceAsStream("/${this.class.simpleName.toLowerCase(Locale.ROOT)}.txt").withReader { it.text }
+        String fileName = "${this.class.simpleName.toLowerCase(Locale.ROOT)}.txt"
+        File f = new File(fileName)
+        if(f.exists()) {
+            f.text
+        } else {
+            this.class.getResourceAsStream("/${fileName}").withReader { it.text }
+        }
     }
 }

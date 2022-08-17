@@ -128,16 +128,16 @@ class Day18 extends AbstractDay {
             if(incoming.isEmpty()) {
                 blocked = true
                 --pointer
-                value
+                (long)value
             } else {
                 blocked = false
                 ++receiveCounter
-                incoming.removeAt(0)
+                (Long)incoming.removeAt(0)
             }
         }
         @Override
         protected void snd(long value) {
-            outgoing << value
+            outgoing << (long)value
             ++sendCounter
         }
         @Override

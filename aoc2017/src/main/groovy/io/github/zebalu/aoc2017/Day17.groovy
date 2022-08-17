@@ -27,7 +27,7 @@ class Day17 extends AbstractDay {
         }
         void fill(int until) {
             until.times {
-                int newVal = it + 1
+                int newVal = (Integer)it + 1
                 position = (position + stepSize) % buffer.size() + 1
                 if(position>=buffer.size()) {
                     buffer << newVal
@@ -52,8 +52,8 @@ class Day17 extends AbstractDay {
             int after0 = -1
             int size = buffer.size()
             int position = position
-            until.times {
-                int newVal = it + 1
+            for(int i=0; i<until; ++i) {
+                int newVal = i + 1
                 position = (position + stepSize) % size + 1
                 if(position==1) {
                     after0 = newVal

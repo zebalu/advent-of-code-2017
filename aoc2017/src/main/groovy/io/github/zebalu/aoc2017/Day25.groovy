@@ -73,11 +73,11 @@ class Day25 extends AbstractDay {
             return (StateTransfer)nextStepMap[state]
         }
         void executeOn(TuringMachine turinMachine) {
-            def transfer = nextStepMap[turinMachine.state]
+            def transfer = (StateTransfer)nextStepMap[turinMachine.state]
             def chs = transfer.getFor(turinMachine.current)
-            turinMachine.current = chs.write
-            turinMachine.move = chs.move
-            turinMachine.state = chs.state
+            turinMachine.current = (int)chs.write
+            turinMachine.move = (int)chs.move
+            turinMachine.state = (String)chs.state
         }
     }
     @Canonical
@@ -111,11 +111,11 @@ class Day25 extends AbstractDay {
     static class Tape {
         private Set<Integer> tape = new HashSet<>()
         int getAt(int position) {
-            tape.contains(position) ? 1 : 0
+            tape.contains((int)position) ? 1 : 0
         }
         void putAt(int position, int value) {
             if(value == 0) {
-                tape.remove(position)
+                tape.remove((int)position)
             } else {
                 tape.add((int)position)
             }

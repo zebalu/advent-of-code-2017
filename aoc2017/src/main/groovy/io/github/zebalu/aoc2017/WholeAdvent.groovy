@@ -11,9 +11,10 @@ class WholeAdvent {
     static void main(String[] args) {
         def days = createDays()
         Instant start = Instant.now()
-        days.each { it.solve() }
+        days.each { it.fancySolve() }
         Instant end = Instant.now()
-        println "took: ${Duration.between(start, end).toMillis()} ms"
+        println "The whole Advent challenge took: ${Duration.between(start, end).toMillis()} ms"
+        println "Merry Christmass!"
     }
 
     private static List<AbstractDay> createDays() {

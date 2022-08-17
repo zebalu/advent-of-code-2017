@@ -31,8 +31,8 @@ class Day15 extends AbstractDay {
     @CompileStatic
     @Override
     protected void solve1() {
-        def generatorA = new RandomGenerator(start: aStart, mul: A_MUL, div: DIV, filter: { true }).iterator()
-        def generatorB = new RandomGenerator(start: bStart, mul: B_MUL, div: DIV, filter: { true }).iterator()
+        def generatorA = new RandomGenerator(aStart, A_MUL, DIV, (__) -> true ).iterator()
+        def generatorB = new RandomGenerator(bStart, B_MUL, DIV, (__) -> true ).iterator()
         int counter = 0
         40_000_000.times {
             if((generatorA.next() & 0xffff) == (generatorB.next() & 0xffff)) {
@@ -44,8 +44,8 @@ class Day15 extends AbstractDay {
     @CompileStatic
     @Override
     protected void solve2() {
-        def generatorA = new RandomGenerator(start: aStart, mul: A_MUL, div: DIV, filter: { (Long)it % 4 == 0 }).iterator()
-        def generatorB = new RandomGenerator(start: bStart, mul: B_MUL, div: DIV, filter: { (Long)it % 8 == 0 }).iterator()
+        def generatorA = new RandomGenerator(aStart, A_MUL, DIV, (Long num) -> num % 4 == 0).iterator()
+        def generatorB = new RandomGenerator(bStart, B_MUL, DIV, (Long num) -> num % 8 == 0).iterator()
         int counter = 0
         5_000_000.times {
             if((generatorA.next() & 0xffff) == (generatorB.next() & 0xffff)) {
@@ -64,23 +64,30 @@ class Day15 extends AbstractDay {
         private final int div
         private final Predicate<Long> filter
 
+        RandomGenerator(int start, int mul, int div, Predicate<Long> filter) {
+            this.start=start;
+            this.mul=mul;
+            this.div=div;
+            this.filter=filter;
+        }
+
         @Override
         Iterator<Integer> iterator() {
-            long[] num = [(long)start]
+            long[] num = new long[]{(long)start};
             return new Iterator<Integer>() {
-                        @Override
-                        boolean hasNext() {
-                            return true;
-                        }
-                        @Override
-                        public Integer next() {
-                            num[0] = (num[0] * mul) % div
-                            while(!filter.test(num[0])) {
-                                num[0] = (num[0] * mul) % div
-                            }
-                            return (int) num[0]
-                        }
+                @Override
+                boolean hasNext() {
+                    return true;
+                }
+                @Override
+                Integer next() {
+                    num[0] = (num[0] * mul) % div;
+                    while(!filter.test(num[0])) {
+                        num[0] = (num[0] * mul) % div;
                     }
+                    return (int) num[0];
+                }
+            };
         }
     }
 }

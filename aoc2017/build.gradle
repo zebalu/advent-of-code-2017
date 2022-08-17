@@ -33,3 +33,27 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+task runDiagnostics(type: JavaExec) {
+    group = "Execution"
+    description = "Run the main class with FlightRecorder"
+    classpath = sourceSets.main.runtimeClasspath
+	jvmArgs=['-XX:+FlightRecorder', '-XX:StartFlightRecording=duration=120s,dumponexit=true,filename=diagnostics.jfr']
+    main = application.mainClassName
+}
+
+tasks.register('runDay', JavaExec) {
+    doFirst {
+        if(!project.hasProperty('day')) {
+            throw new GradleException('You must specify day number as -Pday=1 or as -Pday=21 etc.')
+        }
+        def dayNum = project.getProperty('day') as int
+        if(dayNum < 1 || dayNum > 25) {
+            throw new GradleException("Day number must be at least 1 and at most 25. You have given: ${dayNum} which is incorrect")
+        }
+    }
+    group = "Execution"
+    description = "Run the main class with FlightRecorder"
+    classpath = sourceSets.main.runtimeClasspath
+    main = project.hasProperty('day') ? "io.github.zebalu.aoc2017.Day${String.format('%02d', project.getProperty('day') as int)}" : application.mainClassName
+}
