@@ -49,7 +49,7 @@ class Day25 extends AbstractDay {
             return (int)tape[position]
         }
         void setCurrent(int newValue) {
-            tape[(int)position] = (int)newValue
+            tape.putAt(position, newValue)
         }
         void setMove(int value) {
             position+=value
@@ -75,7 +75,7 @@ class Day25 extends AbstractDay {
             return (StateTransfer)nextStepMap[state]
         }
         void executeOn(TuringMachine turinMachine) {
-            def transfer = (StateTransfer)nextStepMap[turinMachine.state]
+            StateTransfer transfer = (StateTransfer)(nextStepMap.get(turinMachine.state))
             def chs = transfer.getFor(turinMachine.current)
             turinMachine.current = (int)chs.write
             turinMachine.move = (int)chs.move

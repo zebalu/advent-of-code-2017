@@ -17,7 +17,7 @@ class Day05 extends AbstractDay {
     @Override
     protected void solve2() {
         int[] instructions = input.lines().collect { it as int } as int[]
-        solution2 = countSteps(instructions, (i) -> 3<=i ? i-1 : i+1 )
+        solution2 = countSteps(instructions, (i ) -> 3<=i ? i-1 : i+1 )
     }
     
     private int countSteps(int[] instructions, IntFunction<Integer> newValue) {

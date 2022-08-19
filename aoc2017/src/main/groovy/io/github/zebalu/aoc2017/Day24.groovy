@@ -17,24 +17,26 @@ class Day24 extends AbstractDay {
     }
     @Override
     protected void solve1() {
-        State start = new State(new Bridge(lastPort: 0, length: 0, strength: 0), new HashSet<MagneticPiece>(pieces))
+        BitSet unused = new BitSet(pieces.size())
+        unused.set(0, unused.size(), true)
+        State start = new State(new Bridge(lastPort: 0, length: 0, strength: 0), unused)
         Queue<State> toCheck = new LinkedList<>()
         toCheck.add((State)start)
         strongestBridge = start.bridge
         longestStrongestBridge = start.bridge
         while(toCheck.peek() != null) {
             State curr = (State)toCheck.poll()
-            def possibleNexts = curr.possibleExtens()
+            def possibleNexts = curr.possibleExtens(pieces)
             if(possibleNexts.isEmpty()) {
                 if(strongestBridge.strength<curr.bridge.strength) {
                     strongestBridge = curr.bridge
                 }
-                if(longestStrongestBridge<curr.bridge) {
+                if(longestStrongestBridge.compareTo(curr.bridge)<0) {
                     longestStrongestBridge = curr.bridge
                 }
             } else {
                 for(n in possibleNexts) {
-                    toCheck.add((State)curr.extend(n))
+                    toCheck.add((State)curr.extend(n, pieces))
                 }
             }
         }
@@ -49,20 +51,20 @@ class Day24 extends AbstractDay {
     @MapConstructor
     static class State {
         Bridge bridge
-        Set<MagneticPiece> unused
-        List<MagneticPiece> possibleExtens() {
-            def res = new LinkedList<MagneticPiece>()
-            for(MagneticPiece p in unused) {
-                if(p.hasPort(bridge.lastPort)) {
-                    res << (MagneticPiece)p
+        BitSet unused
+        List<Integer> possibleExtens(List<MagneticPiece> pieces) {
+            def res = new LinkedList<Integer>()
+            for(int i=0; i<pieces.size(); ++i) {
+                if(unused.get(i) && pieces[i].hasPort(bridge.lastPort)) {
+                    res.add(i)
                 }
             }
-            return (List<MagneticPiece>)res
+            return res
         }
-        State extend(MagneticPiece next) {
-            def cut = new HashSet<MagneticPiece>((Set<MagneticPiece>)unused)
-            cut.remove(next)
-            return new State(bridge: new Bridge(bridge, next), unused: cut)
+        State extend(int next, List<MagneticPiece> pieces) {
+            BitSet cut = (BitSet) (unused.clone())
+            cut.set(next, false)
+            return new State(new Bridge(bridge, pieces[next]), cut)
         }
     }
     

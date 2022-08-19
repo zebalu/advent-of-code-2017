@@ -115,6 +115,72 @@ class Day22 extends AbstractDay{
             new Coord(x+rhs.x, y+rhs.y)
         }
     }
+    /*
+    private static class EvolvedCarrier {
+        Coord direction = new Coord(0,1)
+        Coord position = new Coord(0,0)
+        int causedInfections = 0
+        void stepOn(ComplexInfectionMap map) {
+            char state = map[(Coord)position]
+            char nextState = turnState(state)
+            if(state == (char)'.') {
+                direction.turnLeft()
+            } else if(state == (char)'W') {
+            } else if(state == (char)'#') {
+                direction.turnRight()
+            } else if(state == (char)'F') {
+                direction.turnBack()
+            }
+            if(nextState == (char)'#') {
+                ++causedInfections
+            }
+            map[(Coord)position]=(char)nextState
+            position+=direction
+        }
+        
+        private char turnState(char state) {
+            switch(state) {
+                case (char)'.': return (char)'W'
+                case (char)'W': return (char)'#'
+                case (char)'#': return (char)'F'
+                case (char)'F': return (char)'.'
+                default: throw new IllegalStateException("unknown state: ${state}")
+            }
+        }
+    }
+    
+    private static class ComplexInfectionMap {
+        private Map<Coord, Character> infectedNodes = new HashMap<>()
+        
+        ComplexInfectionMap(String desc) {
+            def lines = desc.lines().toList()
+            int move = lines.size().intdiv(2)
+            def y = move
+            for(l in lines) {
+                for(int i=0; i<l.size(); ++i) {
+                    def c = l.charAt(i)
+                    if(c == (char)'#') {
+                        int x = i - move
+                        infectedNodes.put(new Coord(x,y), (char)'#')
+                    }
+                }
+                y-=1
+            }
+        }
+        
+        char getAt(Coord coord) {
+            return (char)infectedNodes.getOrDefault((Coord)coord, (char)'.')
+        }
+        
+        void putAt(Coord coord, char c) {
+            if(c == (char)'.') {
+                infectedNodes.remove(coord)
+            } else {
+                infectedNodes[(Coord)coord] = (char)c
+            }
+        }
+    }
+     */
 
     private static class EvolvedCarrier {
         Coord direction = new Coord(0,1);
