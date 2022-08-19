@@ -13,7 +13,7 @@ plugins {
 }
 
 application {
-    mainClassName='io.github.zebalu.aoc2017.WholeAdvent'
+    mainClass ='io.github.zebalu.aoc2017.WholeAdvent'
 }
 
 repositories {
@@ -39,7 +39,7 @@ task runDiagnostics(type: JavaExec) {
     description = "Run the main class with FlightRecorder"
     classpath = sourceSets.main.runtimeClasspath
 	jvmArgs=['-XX:+FlightRecorder', '-XX:StartFlightRecording=duration=120s,dumponexit=true,filename=diagnostics.jfr']
-    main = application.mainClassName
+    mainClass = application.mainClass
 }
 
 tasks.register('runDay', JavaExec) {
@@ -55,5 +55,5 @@ tasks.register('runDay', JavaExec) {
     group = "Execution"
     description = "Run the main class with FlightRecorder"
     classpath = sourceSets.main.runtimeClasspath
-    main = project.hasProperty('day') ? "io.github.zebalu.aoc2017.Day${String.format('%02d', project.getProperty('day') as int)}" : application.mainClassName
+    mainClass = project.hasProperty('day') ? "io.github.zebalu.aoc2017.Day${String.format('%02d', project.getProperty('day') as int)}" : application.mainClassName
 }
