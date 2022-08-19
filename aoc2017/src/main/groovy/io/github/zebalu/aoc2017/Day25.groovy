@@ -3,6 +3,8 @@ package io.github.zebalu.aoc2017
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 
+import java.util.stream.Collectors
+
 @CompileStatic
 class Day25 extends AbstractDay {
     static void main(String[] args) {
@@ -10,7 +12,7 @@ class Day25 extends AbstractDay {
     }
     @Override
     protected void solve1() {
-        def lines = input.lines().toList()
+        List<String> lines = input.lines().collect(Collectors.toList())
         String initState = lines[0].split(' ')[3].substring(0, 1)
         int times = lines[1].split(' ')[5] as int
         List<List<String>> blocks = []
@@ -46,7 +48,7 @@ class Day25 extends AbstractDay {
         int getCurrent() {
             return (int)tape[position]
         }
-        int setCurrent(int newValue) {
+        void setCurrent(int newValue) {
             tape[(int)position] = (int)newValue
         }
         void setMove(int value) {
@@ -109,7 +111,7 @@ class Day25 extends AbstractDay {
     }
     @Canonical
     static class Tape {
-        private Set<Integer> tape = new HashSet<>()
+        private Set<Integer> tape = new HashSet<>(4_000)
         int getAt(int position) {
             tape.contains((int)position) ? 1 : 0
         }
