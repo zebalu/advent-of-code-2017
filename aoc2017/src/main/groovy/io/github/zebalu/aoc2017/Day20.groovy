@@ -72,6 +72,11 @@ class Day20 extends AbstractDay {
             velocity = new Coord(parts[1])//new Coord(v)
             acceleration = new Coord(parts[2])//new Coord(a)
         }
+        Particle(Coord position, Coord velocity, Coord acceleration) {
+            this.position=position
+            this.velocity=velocity
+            this.acceleration=acceleration
+        }
         long getTimeToTurn() {
             long accTurn = velocity.turnsIn(acceleration)
             def posThen = position + (velocity * accTurn) + (acceleration *((accTurn*(accTurn+1)).intdiv(2)))
@@ -86,7 +91,7 @@ class Day20 extends AbstractDay {
             position.distance
         }
         Particle minus(Particle o) {
-            return new Particle(position: position-o.position, velocity: velocity-o.velocity, acceleration: acceleration-o.acceleration)
+            return new Particle(position-o.position, velocity-o.velocity, acceleration-o.acceleration)
         }
         List<Long> findCollisonTimesWith(Particle p) {
             def diff = this - p
@@ -174,20 +179,25 @@ class Day20 extends AbstractDay {
             this.y = parts[1] as int
             this.z = parts[2] as int 
         }
+        Coord(long x, long y, long z) {
+            this.x=x
+            this.y=y;
+            this.z=z
+        }
         long getDistance() {
             x.abs()+y.abs()+z.abs()
         }
         Coord plus(Coord lhs)  {
-            new Coord(x: x+lhs.x, y: y+lhs.y, z: z+lhs.z)
+            new Coord(x+lhs.x, y+lhs.y, z+lhs.z)
         }
         Coord multiply(long t) {
-            new Coord(x: x*t, y: y*t, z: z*t)
+            new Coord(x*t, y*t, z*t)
         }
         Coord div(long t) {
-            new Coord(x: x.intdiv(t), y: y.intdiv(t), z: z.intdiv(t))
+            new Coord((long)x.intdiv(t), (long)y.intdiv(t), (long)z.intdiv(t))
         }
         Coord minus(Coord o) {
-            new Coord(x: x-o.x, y: y-o.y, z: z-o.z)
+            new Coord(x-o.x, y-o.y, z-o.z)
         }
         long turnsIn(Coord o) {
             long max = Long.MIN_VALUE
