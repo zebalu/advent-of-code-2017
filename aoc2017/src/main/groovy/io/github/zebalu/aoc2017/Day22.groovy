@@ -24,7 +24,7 @@ class Day22 extends AbstractDay{
     protected void solve2() {
         ComplexInfectionMap cim = new ComplexInfectionMap(input)
         EvolvedCarrier ec = new EvolvedCarrier()
-        10_000_000.times { 
+        for(int i=0; i<10_000_000; ++i) {
             ec.stepOn(cim)
         }
         solution2 = ec.causedInfections
@@ -87,7 +87,7 @@ class Day22 extends AbstractDay{
         int y
         @Override
         int hashCode() {
-            return x*10_000+y
+            return x*100_000+y
         }
         @Override
         public boolean equals(Object obj) {
@@ -115,72 +115,6 @@ class Day22 extends AbstractDay{
             new Coord(x+rhs.x, y+rhs.y)
         }
     }
-    /*
-    private static class EvolvedCarrier {
-        Coord direction = new Coord(0,1)
-        Coord position = new Coord(0,0)
-        int causedInfections = 0
-        void stepOn(ComplexInfectionMap map) {
-            char state = map[(Coord)position]
-            char nextState = turnState(state)
-            if(state == (char)'.') {
-                direction.turnLeft()
-            } else if(state == (char)'W') {
-            } else if(state == (char)'#') {
-                direction.turnRight()
-            } else if(state == (char)'F') {
-                direction.turnBack()
-            }
-            if(nextState == (char)'#') {
-                ++causedInfections
-            }
-            map[(Coord)position]=(char)nextState
-            position+=direction
-        }
-        
-        private char turnState(char state) {
-            switch(state) {
-                case (char)'.': return (char)'W'
-                case (char)'W': return (char)'#'
-                case (char)'#': return (char)'F'
-                case (char)'F': return (char)'.'
-                default: throw new IllegalStateException("unknown state: ${state}")
-            }
-        }
-    }
-    
-    private static class ComplexInfectionMap {
-        private Map<Coord, Character> infectedNodes = new HashMap<>()
-        
-        ComplexInfectionMap(String desc) {
-            def lines = desc.lines().toList()
-            int move = lines.size().intdiv(2)
-            def y = move
-            for(l in lines) {
-                for(int i=0; i<l.size(); ++i) {
-                    def c = l.charAt(i)
-                    if(c == (char)'#') {
-                        int x = i - move
-                        infectedNodes.put(new Coord(x,y), (char)'#')
-                    }
-                }
-                y-=1
-            }
-        }
-        
-        char getAt(Coord coord) {
-            return (char)infectedNodes.getOrDefault((Coord)coord, (char)'.')
-        }
-        
-        void putAt(Coord coord, char c) {
-            if(c == (char)'.') {
-                infectedNodes.remove(coord)
-            } else {
-                infectedNodes[(Coord)coord] = (char)c
-            }
-        }
-    }
-     */
 
     private static class EvolvedCarrier {
         Coord direction = new Coord(0,1);
@@ -189,15 +123,15 @@ class Day22 extends AbstractDay{
         void stepOn(ComplexInfectionMap map) {
             char state = map.getAt((Coord)position);
             char nextState = turnState(state);
-            if(state == (char)'.') {
+            if(state.is((char)'.')) {
                 direction.turnLeft();
-            } else if(state == (char)'W') {
-            } else if(state == (char)'#') {
+            } else if(state.is((char)'W')) {
+            } else if(state.is((char)'#')) {
                 direction.turnRight();
-            } else if(state == (char)'F') {
+            } else if(state.is((char)'F')) {
                 direction.turnBack();
             }
-            if(nextState == (char)'#') {
+            if(nextState.is((char)'#')) {
                 ++causedInfections;
             }
             map.putAt((Coord)position, (char)nextState);
@@ -224,7 +158,7 @@ class Day22 extends AbstractDay{
     }
 
     private static class ComplexInfectionMap {
-        private Map<Coord, Character> infectedNodes = new HashMap<>();
+        private Map<Coord, Character> infectedNodes = new HashMap<>(100_000);
 
         ComplexInfectionMap(String desc) {
             var lines = desc.lines().collect(Collectors.toList());
@@ -248,7 +182,7 @@ class Day22 extends AbstractDay{
 
         void putAt(Coord coord, char c) {
             if(c.is((char)'.')) {
-                infectedNodes.remove(coord);
+                infectedNodes.remove((Coord)coord);
             } else {
                 infectedNodes.put((Coord)coord, (char)c);
             }
