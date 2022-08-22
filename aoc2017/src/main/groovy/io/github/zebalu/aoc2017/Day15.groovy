@@ -7,7 +7,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Day15 extends AbstractDay {
     static void main(String... args) {
-        new Day15().solve()
+        new Day15().fancySolve()
     }
     private static final Pattern PATTERN = ~/^Generator . starts with (\d+)$/
     private static final int A_MUL = 16807
@@ -48,14 +48,12 @@ class Day15 extends AbstractDay {
         long b = bStart
         int counter = 0
         for(int i=0; i<5_000_000; ++i) {
-            a = (a * A_MUL) % DIV
-            while(( a & 3) != 0) {
+            do {
                 a = (a * A_MUL) % DIV
-            }
-            b = (b * B_MUL) % DIV
-            while((b & 7) != 0) {
+            } while(( a & 3) != 0)
+            do {
                 b = (b * B_MUL) % DIV
-            }
+            } while((b & 7) != 0)
             if ((a & 0xffff) == (b & 0xffff)) {
                 ++counter
             }
